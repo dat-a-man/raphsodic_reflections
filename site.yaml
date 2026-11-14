@@ -1,0 +1,24 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  Everything about the site that you might want to change is in this file.
+#  Change the words between the quotes, save, and the site updates itself.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# The name on the cover. The last word is set in capitals beneath the rest.
+title: "Rhapsodic Reflections"
+
+# Her name, exactly as it should appear. It is signed at the end of every
+# essay, heads the About page, and appears in the footer.
+author: "Uma Chandel"
+
+# An optional line beneath the title on the cover. Empty quotes mean none.
+tagline: ""
+
+# The greeting at the top of the home page.
+welcome: "Welcome. Pull up a chair, pour yourself some tea, and stay a while."
+
+# One sentence that describes the site. It appears on Google and in the
+# little preview card when someone shares a link on WhatsApp.
+description: "Essays, memories and reflections from a retired school teacher."
+
+# The language the essays are written in. "en-GB" is British English.
+language: "en-GB"

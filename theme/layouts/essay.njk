@@ -1,0 +1,63 @@
+---
+layout: base.njk
+---
+{#- One essay: date, title, an optional picture at the top, then the writing. -#}
+{%- set older = collections.essays | getPreviousCollectionItem -%}
+{%- set newer = collections.essays | getNextCollectionItem -%}
+{%- set coverImage = cover | findImage(page.inputPath) -%}
+<article class="essay">
+  <header class="essay__head">
+    {%- if draft %}
+    <p class="essay__draft">Draft &middot; only you can see this</p>
+    {%- endif %}
+    <p class="eyebrow"><time datetime="{{ page.date | isoDate }}">{{ page.date | readableDate }}</time></p>
+    <h1 class="essay__title">{{ title | inlineMd | safe }}</h1>
+    <p class="fleuron" aria-hidden="true">&#x2619;&nbsp;&#x2767;</p>
+  </header>
+
+  {%- if coverImage and coverImage.kind == "local" %}
+  <figure class="photo photo--cover">
+    <img src="{{ coverImage.url }}" alt="{{ (cover_alt | plain) if cover_alt else '' }}" sizes="(min-width: 54em) 50rem, calc(100vw - 2.5rem)" loading="eager" fetchpriority="high">
+    {%- if cover_caption %}
+    <figcaption>{{ cover_caption | inlineMd | safe }}</figcaption>
+    {%- endif %}
+  </figure>
+  {%- elif coverImage and coverImage.kind == "remote" %}
+  <figure class="photo photo--cover">
+    <img src="{{ coverImage.src }}" alt="{{ (cover_alt | plain) if cover_alt else '' }}" eleventy:ignore>
+    {%- if cover_caption %}
+    <figcaption>{{ cover_caption | inlineMd | safe }}</figcaption>
+    {%- endif %}
+  </figure>
+  {%- endif %}
+
+  <div class="prose">
+    {{ content | safe }}
+  </div>
+
+  {#- Signed by the site's author, unless the essay names its own (author: "…"), or author: "" for none. -#}
+  {%- set signedBy = author if (author is defined) else site.author %}
+  {%- if signedBy %}
+  <p class="signature"><span class="signature__by">by</span> {{ signedBy }}</p>
+  {%- endif %}
+
+  <p class="finis" aria-hidden="true">&#x2766;</p>
+</article>
+
+<nav class="onward" aria-label="More reflections">
+  <div class="onward__pair">
+    {%- if older %}
+    <a class="onward__link onward__link--older" href="{{ older.url }}">
+      <span class="onward__label"><span aria-hidden="true">&larr;</span> An earlier reflection</span>
+      <span class="onward__title">{{ older.data.title | inlineMd | safe }}</span>
+    </a>
+    {%- endif %}
+    {%- if newer %}
+    <a class="onward__link onward__link--newer" href="{{ newer.url }}">
+      <span class="onward__label">A later reflection <span aria-hidden="true">&rarr;</span></span>
+      <span class="onward__title">{{ newer.data.title | inlineMd | safe }}</span>
+    </a>
+    {%- endif %}
+  </div>
+  <p class="onward__all"><a href="/">All reflections</a></p>
+</nav>

@@ -1,0 +1,32 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+eleventyImport:
+  collections: ["essays"]
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="{{ site.language }}">
+  <title>{{ site.title }}</title>
+  {%- if site.tagline %}
+  <subtitle>{{ site.tagline }}</subtitle>
+  {%- endif %}
+  <link href="{{ '/feed.xml' | fullUrl }}" rel="self" />
+  <link href="{{ '/' | fullUrl }}" />
+  <id>{{ '/' | fullUrl }}</id>
+  {%- if collections.essays.length %}
+  <updated>{{ collections.essays | getNewestCollectionItemDate | dateToRfc3339 }}</updated>
+  {%- endif %}
+  <author>
+    <name>{{ site.owner }}</name>
+  </author>
+  {%- for essay in (collections.essays | reverse).slice(0, 20) %}
+  <entry>
+    <title>{{ essay.data.title | plain }}</title>
+    <link href="{{ essay.url | fullUrl }}" />
+    <id>{{ essay.url | fullUrl }}</id>
+    <updated>{{ essay.date | dateToRfc3339 }}</updated>
+    <summary>{{ essay | excerpt(280) }}</summary>
+    <content type="html">{{ essay.content | renderTransforms(essay.data.page, site.url + "/") }}</content>
+  </entry>
+  {%- endfor %}
+</feed>

@@ -1,0 +1,37 @@
+---
+layout: base.njk
+---
+{#- The About page: an optional portrait in an arched frame, then her story. -#}
+{%- set portraitImage = portrait | findImage(page.inputPath) -%}
+<article class="essay essay--about">
+  <header class="essay__head">
+    {%- if site.author %}
+    <p class="eyebrow">About the author</p>
+    <h1 class="essay__title">{{ site.author }}</h1>
+    {%- else %}
+    <h1 class="essay__title">{{ (title or "About") | inlineMd | safe }}</h1>
+    {%- endif %}
+    <p class="fleuron" aria-hidden="true">&#x2619;&nbsp;&#x2767;</p>
+  </header>
+
+  {%- if portraitImage and portraitImage.kind == "local" %}
+  <figure class="portrait">
+    <div class="portrait__arch">
+      <img src="{{ portraitImage.url }}" alt="{{ (portrait_alt | plain) if portrait_alt else ('A portrait of ' + site.author if site.author else 'A portrait of the author') }}" eleventy:widths="480,720,960" sizes="(min-width: 30em) 17rem, 62vw" loading="eager">
+    </div>
+    {%- if portrait_caption %}
+    <figcaption>{{ portrait_caption | inlineMd | safe }}</figcaption>
+    {%- endif %}
+  </figure>
+  {%- endif %}
+
+  <div class="prose">
+    {{ content | safe }}
+  </div>
+
+  <p class="finis" aria-hidden="true">&#x2766;</p>
+</article>
+
+<nav class="onward" aria-label="More">
+  <p class="onward__all"><a href="/">Read her reflections</a></p>
+</nav>

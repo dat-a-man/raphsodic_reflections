@@ -1,0 +1,23 @@
+{
+  "name": "rhapsodic-reflections",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A quiet home for one teacher's writing. Essays are Markdown files in posts/.",
+  "type": "module",
+  "scripts": {
+    "start": "eleventy --serve --quiet",
+    "build": "eleventy",
+    "new": "node scripts/new-post.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "3.1.8",
+    "@11ty/eleventy-img": "7.1.1",
+    "@11ty/eleventy-plugin-rss": "3.1.0",
+    "js-yaml": "4.3.2",
+    "markdown-it": "14.3.3",
+    "sharp": "0.35.5"
+  }
+}

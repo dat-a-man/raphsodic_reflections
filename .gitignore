@@ -1,0 +1,9 @@
+# Downloaded tools and the built site: both are recreated automatically.
+node_modules/
+_site/
+.cache/
+
+# Clutter
+.DS_Store
+Thumbs.db
+*.log

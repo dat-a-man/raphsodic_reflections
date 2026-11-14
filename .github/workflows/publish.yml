@@ -1,0 +1,75 @@
+# Publishes the site whenever something changes on the main branch.
+# Nothing here needs running by hand: add or edit an essay, and about a
+# minute later it is live.
+
+name: Publish the site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One publication at a time; a newer one waits for the one in progress.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build the pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch the essays
+        uses: actions/checkout@v7
+        with:
+          # The whole history, not just the latest change: an essay with no
+          # date is given the day it was first added, which is read from here.
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Ask GitHub for the site's address
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Reuse pictures that were resized last time
+        uses: actions/cache@v6
+        with:
+          path: _site/img
+          key: pictures-${{ hashFiles('posts/**', 'about/**', 'eleventy.config.js', 'package-lock.json') }}
+          restore-keys: pictures-
+
+      - name: Install the tools
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
+          PATH_PREFIX: ${{ steps.pages.outputs.base_path }}
+
+      - name: Hand the finished site to GitHub Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    name: Put it online
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v5

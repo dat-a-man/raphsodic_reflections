@@ -1,0 +1,84 @@
+---
+layout: base.njk
+permalink: /
+eleventyExcludeFromCollections: true
+eleventyImport:
+  collections: ["essays"]
+---
+{#- Home: a word of welcome, then every essay with its picture and opening lines. -#}
+{%- set essays = collections.essays | reverse -%}
+{%- if site.welcome %}
+<section class="welcome" aria-label="Welcome">
+  <p>{{ site.welcome | inlineMd | safe }}</p>
+  <p class="fleuron" aria-hidden="true">&#x2766;</p>
+</section>
+{%- endif %}
+
+{%- if not essays.length %}
+<p class="empty">The first reflection will appear here soon.</p>
+{%- else %}
+{%- set latest = essays[0] -%}
+{%- set latestPicture = latest | leadPicture %}
+<section class="latest" aria-labelledby="latest-heading">
+  <h2 class="eyebrow eyebrow--ruled" id="latest-heading"><span>The latest reflection</span></h2>
+  <article class="feature">
+    {%- if latestPicture and latestPicture.kind == "local" %}
+    <div class="feature__picture">
+      <img src="{{ latestPicture.url }}" alt="" sizes="(min-width: 46em) 43rem, calc(100vw - 2.5rem)" loading="eager" fetchpriority="high">
+    </div>
+    {%- elif latestPicture and latestPicture.kind == "remote" %}
+    <div class="feature__picture">
+      <img src="{{ latestPicture.src }}" alt="" eleventy:ignore>
+    </div>
+    {%- endif %}
+    <h3 class="feature__title"><a href="{{ latest.url }}">{{ latest.data.title | inlineMd | safe }}</a></h3>
+    <p class="feature__date"><time datetime="{{ latest.date | isoDate }}">{{ latest.date | readableDate }}</time></p>
+    <p class="feature__excerpt">{{ latest | excerpt(300) }}</p>
+    <p class="feature__more" aria-hidden="true">Continue reading <span>&rarr;</span></p>
+  </article>
+</section>
+
+{%- if essays.length > 1 %}
+<section class="earlier" aria-labelledby="earlier-heading">
+  <h2 class="eyebrow eyebrow--ruled" id="earlier-heading"><span>Earlier reflections</span></h2>
+  <ol class="entries">
+    {%- for essay in essays.slice(1, 11) %}
+    {%- set picture = essay | leadPicture %}
+    <li class="entry">
+      <div class="entry__thumb">
+        {%- if picture and picture.kind == "local" %}
+        <img src="{{ picture.url }}" alt="" eleventy:widths="320,640" sizes="(min-width: 34em) 10rem, 6rem" loading="lazy">
+        {%- elif picture and picture.kind == "remote" %}
+        <img src="{{ picture.src }}" alt="" loading="lazy" decoding="async" eleventy:ignore>
+        {%- else %}
+        <span class="initial initial--{{ essay | cloth }}" aria-hidden="true">{{ essay.data.title | initial }}</span>
+        {%- endif %}
+      </div>
+      <div class="entry__head">
+        <p class="entry__date"><time datetime="{{ essay.date | isoDate }}">{{ essay.date | readableDate }}</time></p>
+        <h3 class="entry__title"><a href="{{ essay.url }}">{{ essay.data.title | inlineMd | safe }}</a></h3>
+      </div>
+      <p class="entry__excerpt">{{ essay | excerpt(170) }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if essays.length > 11 %}
+<section class="shelf" aria-labelledby="shelf-heading">
+  <h2 class="eyebrow eyebrow--ruled" id="shelf-heading"><span>From the shelf</span></h2>
+  {%- for group in essays.slice(11) | byYear %}
+  <h3 class="shelf__year">{{ group.year }}</h3>
+  <ol class="shelf__list">
+    {%- for essay in group.essays %}
+    <li class="shelf__item">
+      <a href="{{ essay.url }}">{{ essay.data.title | inlineMd | safe }}</a>
+      <time datetime="{{ essay.date | isoDate }}">{{ essay.date | shortDate }}</time>
+    </li>
+    {%- endfor %}
+  </ol>
+  {%- endfor %}
+</section>
+{%- endif %}
+{%- endif %}
