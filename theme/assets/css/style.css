@@ -1021,11 +1021,10 @@ code {
   font-style: italic;
   font-weight: 500;
   line-height: 1.2;
-  text-align: right;
+  text-align: left;
 }
 .signature__by {
   color: var(--ink-soft);
-  font-size: 0.72em;
 }
 .signature + .finis {
   margin-top: 1.6rem;
