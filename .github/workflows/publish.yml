@@ -52,9 +52,11 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        # GitHub reports the address as http:// until the HTTPS certificate is
+        # ready. The site ends up on https://, so write its links that way from the start.
+        run: SITE_URL="${BASE_URL/#http:/https:}" npm run build
         env:
-          SITE_URL: ${{ steps.pages.outputs.base_url }}
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
           PATH_PREFIX: ${{ steps.pages.outputs.base_path }}
 
       - name: Hand the finished site to GitHub Pages
